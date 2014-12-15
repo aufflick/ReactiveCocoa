@@ -36,6 +36,16 @@ public final class ObservableProperty<T> {
 			}
 		}
 	}
+	
+	public var error: NSError {
+		didSet {
+			dispatch_sync(queue) {
+				for sink in self.sinks {
+					sink.put(.Error(Box(self.error)))
+				}
+			}
+		}
+	}
 
 	/// A signal that will send the property's current value, followed by all
 	/// changes over time. The signal will complete when the property
